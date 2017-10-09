@@ -1,41 +1,44 @@
-var data = [];
+var dataw = [], datac = [];
 //var gs = "https://spreadsheets.google.com/feeds/list/1StkcQvE-2XfEPZCeV2XWdzXqqs-Ib1ZgU98tzdFKzbI/1/public/values?alt=json";
-var yql = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20htmlstring%20where%20url%3D'http%3A%2F%2Fquiz-wiz.com%2Fdatabase%2Fquiz5%2F%3Fdisp%3D10000%26raid%3Donly_raid'%20and%20xpath%3D'%2F%2Ftable'&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=";
-$.ajax({
-  url: yql,
-  success: function(r){
-    console.log(r);
-    var $table = $(r.query.results.result)
-    var table = $table.tableToJSON({onlyColumns: [2,3], ignoreHiddenRows: false});
-    console.log(table);
-    table.forEach(function(s){
-      var q = s['問題'].toLowerCase();
-      var a = s['答え'].split('');
-      data.push({q: q, a: a});
+var gsw = "https://spreadsheets.google.com/feeds/list/1StkcQvE-2XfEPZCeV2XWdzXqqs-Ib1ZgU98tzdFKzbI/1/public/values?alt=json";
+var gsc = "https://spreadsheets.google.com/feeds/list/1StkcQvE-2XfEPZCeV2XWdzXqqs-Ib1ZgU98tzdFKzbI/2/public/values?alt=json";
+$.ajax(gsw)
+  .done(function(r){
+    r.feed.entry.forEach(function(s){
+      var q = s['gsx$問題']['$t'].toLowerCase();
+      var a = s['gsx$答え']['$t'].split('');
+      dataw.push({q: q, a: a});
     });
-    console.log(data);
-    $('#quesPart').on('keyup', keyupCallback);
-    $('#playerPos').on('change', keyupCallback);
-  }
-});
+    $('#wquesPart').on('keyup', wkeyupCallback);
+    $('#wplayerPos').on('change', wkeyupCallback);
+  })
+  .fail(function(e){
+    console.error(e);
+  });
 
-function keyupCallback() {
-  var val, i, j, len, res, pos = parseInt($('#playerPos').val());
-  val = $('#quesPart').val();
-  val = val.replace(/\s\s+/g, ' ');
-  $('#resList').html('');
-  if(val.length < 2) return;
-  val = val.toLowerCase();
+$.ajax(gsc)
+  .done(function(r){
+    r.feed.entry.forEach(function(s){
+      var q = s['gsx$問題答え']['$t'].toLowerCase();
+      var a = s['gsx$答え']['$t'].split('／');
+      datac.push({q: q, a: a});
+    });
+    $('#cquesPart').on('keyup', ckeyupCallback);
+    $('#cplayerPos').on('change', ckeyupCallback);
+  })
+  .fail(function(e){
+    console.error(e.responseJSON);
+  });
 
+function search4Result(val, data){
+  var i, j, len, res;
   try {
     if (val.split(" ").length > 1) {
       val = val.split(" ");
       val = _.uniqBy(val);
-      for (i = j = 0, len = val.length; j < len; i = ++j) {
-        v = val[i];
-        if (v === "") {
-          delete val[i];
-        }
+      for(i = j = 0, len = val.length; j < len; i = ++j) {
+        var v = val[i];
+        if(v === "") delete[i];
       }
       res = _.filter(data, function(o){
         var f = true;
@@ -45,16 +48,27 @@ function keyupCallback() {
         return f;
       });
     } else {
-      res = _.filter(data, function(o){
+      res = _.filter(dataw, function(o){
         return o.q.indexOf(val) !== -1;
       });
+      return res;
     }
-  } catch (error) {
+  }catch(error){
     console.error(error);
     return;
   }
-  console.log(res);
-  console.log(pos);
+}
+
+function wkeyupCallback() {
+  var val, i, j, len, res, pos = parseInt($('#wplayerPos').val());
+  val = $('#wquesPart').val();
+  val = val.replace(/\s\s+/g, ' ');
+  $('#wresList').html('');
+  if(val.length < 2) return;
+  val = val.toLowerCase();
+
+  res = search4Result(val, dataw);
+  if(res == null) return;
   html = '';
   res.forEach(function(r){
     var q = r.q, a = '';
@@ -64,5 +78,22 @@ function keyupCallback() {
     }
     html += '<tr><td>' + a + '</td><td>' + q + '</td></tr>';
   });
-  $('#resList').append(html);
+  $('#wresList').append(html);
+}
+function ckeyupCallback() {
+  var val, i, j, len, res;
+  val = $('#wquesPart').val();
+  val = val.replace(/\s\s+/g, ' ');
+  $('#cresList').html('');
+  if(val.length < 2) return;
+  val = val.toLowerCase();
+
+  res = search4Result(val, datac);
+  if(res == null) return;
+  html = '';
+  res.forEach(function(r){
+    var q = r.q, a = r.a.join('<br>');
+    html += '<tr><td>' + a + '</td><td>' + q + '</td></tr>';
+  });
+  $('#cresList').append(html);
 }
