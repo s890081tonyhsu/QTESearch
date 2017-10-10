@@ -9,8 +9,9 @@ $.ajax(gsw)
       var a = s['gsx$答え']['$t'].split('');
       dataw.push({q: q, a: a});
     });
+    $('#loadw').text(dataw.length);
     $('#wquesPart').on('keyup', wkeyupCallback);
-    $('#wplayerPos').on('change', wkeyupCallback);
+    $('#wplayerPos input[type=radio]').on('change', wkeyupCallback);
   })
   .fail(function(e){
     console.error(e);
@@ -23,12 +24,44 @@ $.ajax(gsc)
       var a = s['gsx$答え']['$t'].split('／');
       datac.push({q: q, a: a});
     });
+    $('#loadc').text(datac.length);
     $('#cquesPart').on('keyup', ckeyupCallback);
     $('#cplayerPos').on('change', ckeyupCallback);
   })
   .fail(function(e){
     console.error(e.responseJSON);
   });
+
+$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+  $('.tab-pane').each(function(){$(this).removeClass('active')});
+});
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  switch($(e.target).attr('id')){
+    case 'qtew-tab':
+      $('#wquesPart').val('');
+      $('#wresList').html('');
+      $('#wplayerPos label:first-child').click().addClass('active');
+      break;
+    case 'qtec-tab':
+      $('#cquesPart').val('');
+      $('#cresList').html('');
+      break;
+    default:
+      break;
+  }
+});
+
+$('input[type="text"]').on('input propertychange', function() {
+  var $this = $(this);
+  var visible = Boolean($this.val());
+  $this.siblings('.input-clear').toggleClass('hidden', !visible);
+}).trigger('propertychange');
+
+$('.input-clear').click(function() {
+  $(this).siblings('input[type="text"]').val('')
+    .trigger('propertychange').focus();
+});
 
 function search4Result(val, data){
   var i, j, len, res;
@@ -48,7 +81,7 @@ function search4Result(val, data){
         return f;
       });
     } else {
-      res = _.filter(dataw, function(o){
+      res = _.filter(data, function(o){
         return o.q.indexOf(val) !== -1;
       });
       return res;
@@ -60,7 +93,7 @@ function search4Result(val, data){
 }
 
 function wkeyupCallback() {
-  var val, i, j, len, res, pos = parseInt($('#wplayerPos').val());
+  var val, res, pos = parseInt($('#wplayerPos input[type=radio]:checked').val());
   val = $('#wquesPart').val();
   val = val.replace(/\s\s+/g, ' ');
   $('#wresList').html('');
@@ -81,8 +114,8 @@ function wkeyupCallback() {
   $('#wresList').append(html);
 }
 function ckeyupCallback() {
-  var val, i, j, len, res;
-  val = $('#wquesPart').val();
+  var val, res;
+  val = $('#cquesPart').val();
   val = val.replace(/\s\s+/g, ' ');
   $('#cresList').html('');
   if(val.length < 2) return;
