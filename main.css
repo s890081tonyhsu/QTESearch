@@ -1,9 +1,6 @@
+/* Base page and tab styles */
 .row:first-child{
   margin-top: 10px;
-}
-span{
-  color: red;
-  font-weight: 700;
 }
 .btn-light.active {
   color: #fff;
@@ -21,6 +18,16 @@ span{
   -o-transition: opacity .15s linear;
   transition: opacity .15s linear;
 }
+
+/* Question part input styles */
+@media screen and (min-width: 576px) {
+  .ppos:before{
+    content: "Player ";
+  }
+  .ppos:after{
+    content: "ition";
+  }
+}
 ::-ms-clear {
   display: none;
 }
@@ -35,3 +42,35 @@ span{
 .input-clear.hidden {
   display: none !important;
 }
+
+/* Answer showing table and highlight answer */
+table tr td:first-child {
+  width: 8em;
+  min-width: 8em;
+  max-width: 8em;
+  word-break: break-all;
+}
+span{
+  color: red;
+  font-weight: 700;
+}
+/* ref: https://naifix.com/strong-css-sample/ */
+.cAns{
+  color: #111;
+}
+.cAns0{
+  background: linear-gradient(transparent 60%, rgba(255, 52, 51, .3) 60%);
+}
+.cAns1{
+  background: linear-gradient(transparent 60%, rgba(255, 255, 0, .5) 60%);
+}
+.cAns2{
+  background: linear-gradient(transparent 60%, rgba(60, 255, 60, .5) 60%);
+}
+.cAns3{
+  background: linear-gradient(transparent 60%, rgba(0, 214, 255, .5) 60%);
+}
+.cAns4{
+  background: linear-gradient(transparent 60%, rgba(237, 21, 254, .5) 60%);
+}
+

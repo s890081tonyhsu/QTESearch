@@ -34,17 +34,18 @@ $.ajax(gsc)
 
 $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
   $('.tab-pane').each(function(){$(this).removeClass('active')});
+  $('.navbar-toggler:visible').click();
 });
 
 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
   switch($(e.target).attr('id')){
     case 'qtew-tab':
-      $('#wquesPart').val('');
+      $('#wquesPart').val('').trigger('propertychange');
       $('#wresList').html('');
       $('#wplayerPos label:first-child').click().addClass('active');
       break;
     case 'qtec-tab':
-      $('#cquesPart').val('');
+      $('#cquesPart').val('').trigger('propertychange');
       $('#cresList').html('');
       break;
     default:
@@ -60,7 +61,7 @@ $('input[type="text"]').on('input propertychange', function() {
 
 $('.input-clear').click(function() {
   $(this).siblings('input[type="text"]').val('')
-    .trigger('propertychange').focus();
+    .trigger('propertychange').keyup().focus();
 });
 
 function search4Result(val, data){
@@ -125,7 +126,11 @@ function ckeyupCallback() {
   if(res == null) return;
   html = '';
   res.forEach(function(r){
-    var q = r.q, a = r.a.join('<br>');
+    var q = r.q, a = '';
+    for(var i = 0; i < 5; i++){
+      if(i != 0) a += '<br />';
+      a += '<span class="cAns cAns'+ i +'">' + r.a[i] + '</span>';
+    }
     html += '<tr><td>' + a + '</td><td>' + q + '</td></tr>';
   });
   $('#cresList').append(html);

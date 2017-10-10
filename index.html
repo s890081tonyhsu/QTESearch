@@ -37,7 +37,7 @@
       <div class="tab-content col-12">
         <div class="tab-pane active" id="qtew" role="tabpanel" aria-labelledby="qtew-tab">
           <div class="row">
-            <p class="col-3">Player Position</p>
+            <p class="col-3 ppos">Pos</p>
             <div class="btn-group col-9" data-toggle="buttons" id="wplayerPos">
               <label class="btn btn-light active">
                 <input type="radio" name="options" value="0" autocomplete="off" checked> P1
@@ -58,19 +58,21 @@
           </div>
           <div class="input-group">
             <input id="wquesPart" type="text" class="form-control" placeholder="Question part info"/>
-            <span class="input-group-addon input-clear">
+            <span class="input-group-addon input-clear hidden">
               <span class="oi" data-glyph="delete"></span>
             </span>
           </div>
-          <table id="wresList" class="table">
+          <table id="wresList" class="table table-striped table-responsive">
           </table>
         </div>
         <div class="tab-pane" id="qtec" role="tabpanel" aria-labelledby="qtec-tab">
           <div class="input-group">
             <input id="cquesPart" type="text" class="form-control" placeholder="Question part info"/>
-            <span class="input-clear oi" data-glyph="delete"></span>
+            <span class="input-group-addon input-clear hidden">
+              <span class="oi" data-glyph="delete"></span>
+            </span>
           </div>
-          <table id="cresList" class="table">
+          <table id="cresList" class="table table-striped table-responsive">
           </table>
         </div>
       </div>
