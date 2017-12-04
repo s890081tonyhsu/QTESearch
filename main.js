@@ -85,8 +85,8 @@ function search4Result(val, data){
       res = _.filter(data, function(o){
         return o.q.indexOf(val) !== -1;
       });
-      return res;
     }
+    return res;
   }catch(error){
     console.error(error);
     return;
